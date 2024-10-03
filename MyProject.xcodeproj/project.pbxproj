@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AABE53C82CAF00530077486A /* MyProductCKLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEB56E72CADF9880095E5FA /* MyProductCKLib.framework */; };
+		AABE53C92CAF00530077486A /* MyProductCKLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AAEB56E72CADF9880095E5FA /* MyProductCKLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AADAF4A72CAC9DF8009B6744 /* MyProductLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADAF4A12CAC9DF8009B6744 /* MyProductLib.framework */; };
 		AADAF4A82CAC9DF8009B6744 /* MyProductLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AADAF4A12CAC9DF8009B6744 /* MyProductLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AAEB56F92CADFB910095E5FA /* MyProductCKLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEB56E72CADF9880095E5FA /* MyProductCKLib.framework */; };
@@ -14,6 +16,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		AABE53CA2CAF00530077486A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA3A134F2CAC5A0100CF2744 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AAEB56E62CADF9880095E5FA;
+			remoteInfo = MyProductCKLib;
+		};
 		AADAF4A52CAC9DF8009B6744 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AA3A134F2CAC5A0100CF2744 /* Project object */;
@@ -42,6 +51,17 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AABE53CC2CAF00530077486A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				AABE53C92CAF00530077486A /* MyProductCKLib.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AAEB56FD2CADFB910095E5FA /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -58,6 +78,7 @@
 /* Begin PBXFileReference section */
 		AA3A13572CAC5A0100CF2744 /* MyProduct.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyProduct.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA3A13792CAC5E6800CF2744 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		AABE53B62CAEFE9F0077486A /* NSWrapper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NSWrapper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AADAF4A12CAC9DF8009B6744 /* MyProductLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MyProductLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AAEB56D32CADF95F0095E5FA /* MyProductCK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyProductCK.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AAEB56E72CADF9880095E5FA /* MyProductCKLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MyProductCKLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -67,14 +88,16 @@
 		AA1CA58D2CADFE8E004AF3C0 /* Exceptions for "MyProductCKNS" folder in "MyProduct" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				.build,
+				"index-notarized.js",
 				index.js,
 				node_modules,
 				"package-lock.json",
 				package.json,
 				Package.resolved,
 				Package.swift,
+				"post-build-app.sh",
 				"post-build-lib.sh",
+				"pre-archive.sh",
 				Sources/MyModelExports.swift,
 			);
 			target = AA3A13562CAC5A0100CF2744 /* MyProduct */;
@@ -140,6 +163,11 @@
 			path = MyProduct;
 			sourceTree = "<group>";
 		};
+		AABE53B72CAEFE9F0077486A /* NSWrapper */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NSWrapper;
+			sourceTree = "<group>";
+		};
 		AADA929A2CADA460009B6744 /* MyProductNS */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -184,6 +212,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AABE53B32CAEFE9F0077486A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AABE53C82CAF00530077486A /* MyProductCKLib.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AADAF49E2CAC9DF8009B6744 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -219,6 +255,7 @@
 				AAEB56D42CADF95F0095E5FA /* MyProductCK */,
 				AAEB56E82CADF9880095E5FA /* MyProductCKLib */,
 				AA1CA5772CADFE21004AF3C0 /* MyProductCKNS */,
+				AABE53B72CAEFE9F0077486A /* NSWrapper */,
 				AADAF4832CAC9C29009B6744 /* Frameworks */,
 				AA3A13582CAC5A0100CF2744 /* Products */,
 			);
@@ -231,6 +268,7 @@
 				AADAF4A12CAC9DF8009B6744 /* MyProductLib.framework */,
 				AAEB56D32CADF95F0095E5FA /* MyProductCK.app */,
 				AAEB56E72CADF9880095E5FA /* MyProductCKLib.framework */,
+				AABE53B62CAEFE9F0077486A /* NSWrapper.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -286,6 +324,30 @@
 			);
 			productName = MyProduct;
 			productReference = AA3A13572CAC5A0100CF2744 /* MyProduct.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AABE53B52CAEFE9F0077486A /* NSWrapper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AABE53C42CAEFEA10077486A /* Build configuration list for PBXNativeTarget "NSWrapper" */;
+			buildPhases = (
+				AABE53B22CAEFE9F0077486A /* Sources */,
+				AABE53B32CAEFE9F0077486A /* Frameworks */,
+				AABE53B42CAEFE9F0077486A /* Resources */,
+				AABE53CC2CAF00530077486A /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AABE53CB2CAF00530077486A /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				AABE53B72CAEFE9F0077486A /* NSWrapper */,
+			);
+			name = NSWrapper;
+			packageProductDependencies = (
+			);
+			productName = NSWrapper;
+			productReference = AABE53B62CAEFE9F0077486A /* NSWrapper.app */;
 			productType = "com.apple.product-type.application";
 		};
 		AADAF4A02CAC9DF8009B6744 /* MyProductLib */ = {
@@ -371,6 +433,9 @@
 					AA3A13562CAC5A0100CF2744 = {
 						CreatedOnToolsVersion = 16.0;
 					};
+					AABE53B52CAEFE9F0077486A = {
+						CreatedOnToolsVersion = 16.0;
+					};
 					AADAF4A02CAC9DF8009B6744 = {
 						CreatedOnToolsVersion = 16.0;
 					};
@@ -402,12 +467,20 @@
 				AADAF4A02CAC9DF8009B6744 /* MyProductLib */,
 				AAEB56D22CADF95F0095E5FA /* MyProductCK */,
 				AAEB56E62CADF9880095E5FA /* MyProductCKLib */,
+				AABE53B52CAEFE9F0077486A /* NSWrapper */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		AA3A13552CAC5A0100CF2744 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AABE53B42CAEFE9F0077486A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -445,6 +518,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AABE53B22CAEFE9F0077486A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AADAF49D2CAC9DF8009B6744 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -469,6 +549,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		AABE53CB2CAF00530077486A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AAEB56E62CADF9880095E5FA /* MyProductCKLib */;
+			targetProxy = AABE53CA2CAF00530077486A /* PBXContainerItemProxy */;
+		};
 		AADAF4A62CAC9DF8009B6744 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = AADAF4A02CAC9DF8009B6744 /* MyProductLib */;
@@ -651,6 +736,62 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.stevengharris.MyProduct;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		AABE53C22CAEFEA10077486A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = NSWrapper/NSWrapper.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = 7XXG4VJQ59;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stevengharris.NSWrapper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		AABE53C32CAEFEA10077486A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = NSWrapper/NSWrapper.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = 7XXG4VJQ59;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stevengharris.NSWrapper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -869,6 +1010,15 @@
 			buildConfigurations = (
 				AA3A13672CAC5A0300CF2744 /* Debug */,
 				AA3A13682CAC5A0300CF2744 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AABE53C42CAEFEA10077486A /* Build configuration list for PBXNativeTarget "NSWrapper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AABE53C22CAEFEA10077486A /* Debug */,
+				AABE53C32CAEFEA10077486A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
