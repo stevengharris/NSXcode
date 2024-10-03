@@ -1,0 +1,18 @@
+{
+  "name": "node-swift-xcode-cklib",
+  "version": "1.0.0",
+  "description": "Create CK-entitled node-swift modules from Xcode",
+  "main": "index.js",
+  "scripts": {
+    "install": "node-swift rebuild",
+    "build": "node-swift build",
+    "builddebug": "node-swift build --debug",
+    "clean": "node-swift clean"
+  },
+  "author": "Steven G. Harris",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "node-swift": "file:../../node-swift"
+  },
+  "private": true
+}

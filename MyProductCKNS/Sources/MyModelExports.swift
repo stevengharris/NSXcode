@@ -1,16 +1,19 @@
 //
 //  MyModelExports.swift
-//  MyProductNS
+//  MyProductCKNS
 //
 //  Created by Steven Harris on 9/21/24.
 //
 
 import NodeAPI
-import MyProductLib
+import MyProductCKLib
 
 #NodeModule(exports: [
     "hello": try NodeFunction { _ in
         MyModel.helloWorld()
+    },
+    "iCloud": try NodeFunction { _ in
+        MyModel.helloCloudKit()
     },
     // For consistency with the existing node-swift example...
     "nums": [Double.pi.rounded(.down), Double.pi.rounded(.up)],

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		AADAF4A72CAC9DF8009B6744 /* MyProductLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AADAF4A12CAC9DF8009B6744 /* MyProductLib.framework */; };
 		AADAF4A82CAC9DF8009B6744 /* MyProductLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AADAF4A12CAC9DF8009B6744 /* MyProductLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AAEB56F92CADFB910095E5FA /* MyProductCKLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEB56E72CADF9880095E5FA /* MyProductCKLib.framework */; };
+		AAEB56FA2CADFB910095E5FA /* MyProductCKLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = AAEB56E72CADF9880095E5FA /* MyProductCKLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -18,6 +20,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = AADAF4A02CAC9DF8009B6744;
 			remoteInfo = MyProductLib;
+		};
+		AAEB56FB2CADFB910095E5FA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA3A134F2CAC5A0100CF2744 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AAEB56E62CADF9880095E5FA;
+			remoteInfo = MyProductCKLib;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -33,23 +42,54 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AAEB56FD2CADFB910095E5FA /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				AAEB56FA2CADFB910095E5FA /* MyProductCKLib.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		AA3A13572CAC5A0100CF2744 /* MyProduct.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyProduct.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA3A13792CAC5E6800CF2744 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		AADAF4A12CAC9DF8009B6744 /* MyProductLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MyProductLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AAEB56D32CADF95F0095E5FA /* MyProductCK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyProductCK.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AAEB56E72CADF9880095E5FA /* MyProductCKLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MyProductCKLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		AADA929B2CADA49F009B6744 /* Exceptions for "MyProductNS" folder in "MyProduct" target */ = {
+		AA1CA58D2CADFE8E004AF3C0 /* Exceptions for "MyProductCKNS" folder in "MyProduct" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				.build,
-				.swiftpm,
 				index.js,
 				node_modules,
+				"package-lock.json",
 				package.json,
+				Package.resolved,
+				Package.swift,
+				"post-build-lib.sh",
+				Sources/MyModelExports.swift,
+			);
+			target = AA3A13562CAC5A0100CF2744 /* MyProduct */;
+		};
+		AA1CA59A2CAE04E6004AF3C0 /* Exceptions for "MyProductNS" folder in "MyProduct" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				.build,
+				.swiftpm/xcode/package.xcworkspace,
+				.swiftpm/xcode/xcuserdata/steve.xcuserdatad/xcschemes/xcschememanagement.plist,
+				index.js,
+				node_modules,
+				"package-lock.json",
+				package.json,
+				Package.resolved,
 				Package.swift,
 				"post-build-lib.sh",
 				Sources/MyModelExports.swift,
@@ -59,6 +99,8 @@
 		AADAF4AB2CAC9DF8009B6744 /* Exceptions for "MyProductLib" folder in "MyProductLib" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				.swiftpm/xcode/package.xcworkspace,
+				.swiftpm/xcode/xcuserdata/steve.xcuserdatad/xcschemes/xcschememanagement.plist,
 				Package.swift,
 			);
 			publicHeaders = (
@@ -66,9 +108,33 @@
 			);
 			target = AADAF4A02CAC9DF8009B6744 /* MyProductLib */;
 		};
+		AAEB56F22CADF9880095E5FA /* Exceptions for "MyProductCKLib" folder in "MyProductCKLib" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				.swiftpm/xcode/package.xcworkspace,
+				.swiftpm/xcode/xcuserdata/steve.xcuserdatad/xcschemes/xcschememanagement.plist,
+				Package.swift,
+			);
+			publicHeaders = (
+				MyProductCKLib.h,
+			);
+			target = AAEB56E62CADF9880095E5FA /* MyProductCKLib */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		AA1CA5772CADFE21004AF3C0 /* MyProductCKNS */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AA1CA58D2CADFE8E004AF3C0 /* Exceptions for "MyProductCKNS" folder in "MyProduct" target */,
+			);
+			explicitFolders = (
+				.build,
+				node_modules,
+			);
+			path = MyProductCKNS;
+			sourceTree = "<group>";
+		};
 		AA3A13592CAC5A0100CF2744 /* MyProduct */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = MyProduct;
@@ -77,11 +143,10 @@
 		AADA929A2CADA460009B6744 /* MyProductNS */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				AADA929B2CADA49F009B6744 /* Exceptions for "MyProductNS" folder in "MyProduct" target */,
+				AA1CA59A2CAE04E6004AF3C0 /* Exceptions for "MyProductNS" folder in "MyProduct" target */,
 			);
 			explicitFolders = (
 				.build,
-				.swiftpm,
 				node_modules,
 			);
 			path = MyProductNS;
@@ -93,6 +158,19 @@
 				AADAF4AB2CAC9DF8009B6744 /* Exceptions for "MyProductLib" folder in "MyProductLib" target */,
 			);
 			path = MyProductLib;
+			sourceTree = "<group>";
+		};
+		AAEB56D42CADF95F0095E5FA /* MyProductCK */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MyProductCK;
+			sourceTree = "<group>";
+		};
+		AAEB56E82CADF9880095E5FA /* MyProductCKLib */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AAEB56F22CADF9880095E5FA /* Exceptions for "MyProductCKLib" folder in "MyProductCKLib" target */,
+			);
+			path = MyProductCKLib;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -113,6 +191,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AAEB56D02CADF95F0095E5FA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AAEB56F92CADFB910095E5FA /* MyProductCKLib.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AAEB56E42CADF9880095E5FA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -123,6 +216,9 @@
 				AA3A13592CAC5A0100CF2744 /* MyProduct */,
 				AADAF4A22CAC9DF8009B6744 /* MyProductLib */,
 				AADA929A2CADA460009B6744 /* MyProductNS */,
+				AAEB56D42CADF95F0095E5FA /* MyProductCK */,
+				AAEB56E82CADF9880095E5FA /* MyProductCKLib */,
+				AA1CA5772CADFE21004AF3C0 /* MyProductCKNS */,
 				AADAF4832CAC9C29009B6744 /* Frameworks */,
 				AA3A13582CAC5A0100CF2744 /* Products */,
 			);
@@ -133,6 +229,8 @@
 			children = (
 				AA3A13572CAC5A0100CF2744 /* MyProduct.app */,
 				AADAF4A12CAC9DF8009B6744 /* MyProductLib.framework */,
+				AAEB56D32CADF95F0095E5FA /* MyProductCK.app */,
+				AAEB56E72CADF9880095E5FA /* MyProductCKLib.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -148,6 +246,13 @@
 
 /* Begin PBXHeadersBuildPhase section */
 		AADAF49C2CAC9DF8009B6744 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AAEB56E22CADF9880095E5FA /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -172,6 +277,7 @@
 				AADAF4A62CAC9DF8009B6744 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				AA1CA5772CADFE21004AF3C0 /* MyProductCKNS */,
 				AA3A13592CAC5A0100CF2744 /* MyProduct */,
 				AADA929A2CADA460009B6744 /* MyProductNS */,
 			);
@@ -205,6 +311,53 @@
 			productReference = AADAF4A12CAC9DF8009B6744 /* MyProductLib.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		AAEB56D22CADF95F0095E5FA /* MyProductCK */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AAEB56E12CADF9610095E5FA /* Build configuration list for PBXNativeTarget "MyProductCK" */;
+			buildPhases = (
+				AAEB56CF2CADF95F0095E5FA /* Sources */,
+				AAEB56D02CADF95F0095E5FA /* Frameworks */,
+				AAEB56D12CADF95F0095E5FA /* Resources */,
+				AAEB56FD2CADFB910095E5FA /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AAEB56FC2CADFB910095E5FA /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				AAEB56D42CADF95F0095E5FA /* MyProductCK */,
+			);
+			name = MyProductCK;
+			packageProductDependencies = (
+			);
+			productName = MyProductCK;
+			productReference = AAEB56D32CADF95F0095E5FA /* MyProductCK.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AAEB56E62CADF9880095E5FA /* MyProductCKLib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AAEB56EF2CADF9880095E5FA /* Build configuration list for PBXNativeTarget "MyProductCKLib" */;
+			buildPhases = (
+				AAEB56E22CADF9880095E5FA /* Headers */,
+				AAEB56E32CADF9880095E5FA /* Sources */,
+				AAEB56E42CADF9880095E5FA /* Frameworks */,
+				AAEB56E52CADF9880095E5FA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				AAEB56E82CADF9880095E5FA /* MyProductCKLib */,
+			);
+			name = MyProductCKLib;
+			packageProductDependencies = (
+			);
+			productName = MyProductCKLib;
+			productReference = AAEB56E72CADF9880095E5FA /* MyProductCKLib.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -219,6 +372,12 @@
 						CreatedOnToolsVersion = 16.0;
 					};
 					AADAF4A02CAC9DF8009B6744 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					AAEB56D22CADF95F0095E5FA = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					AAEB56E62CADF9880095E5FA = {
 						CreatedOnToolsVersion = 16.0;
 					};
 				};
@@ -241,6 +400,8 @@
 			targets = (
 				AA3A13562CAC5A0100CF2744 /* MyProduct */,
 				AADAF4A02CAC9DF8009B6744 /* MyProductLib */,
+				AAEB56D22CADF95F0095E5FA /* MyProductCK */,
+				AAEB56E62CADF9880095E5FA /* MyProductCKLib */,
 			);
 		};
 /* End PBXProject section */
@@ -254,6 +415,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AADAF49F2CAC9DF8009B6744 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AAEB56D12CADF95F0095E5FA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AAEB56E52CADF9880095E5FA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -277,6 +452,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AAEB56CF2CADF95F0095E5FA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AAEB56E32CADF9880095E5FA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -284,6 +473,11 @@
 			isa = PBXTargetDependency;
 			target = AADAF4A02CAC9DF8009B6744 /* MyProductLib */;
 			targetProxy = AADAF4A52CAC9DF8009B6744 /* PBXContainerItemProxy */;
+		};
+		AAEB56FC2CADFB910095E5FA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AAEB56E62CADF9880095E5FA /* MyProductCKLib */;
+			targetProxy = AAEB56FB2CADFB910095E5FA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -534,6 +728,130 @@
 			};
 			name = Release;
 		};
+		AAEB56DF2CADF9610095E5FA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MyProductCK/MyProductCK.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"MyProductCK/Preview Content\"";
+				DEVELOPMENT_TEAM = 7XXG4VJQ59;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stevengharris.MyProductCK;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		AAEB56E02CADF9610095E5FA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MyProductCK/MyProductCK.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"MyProductCK/Preview Content\"";
+				DEVELOPMENT_TEAM = 7XXG4VJQ59;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stevengharris.MyProductCK;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		AAEB56F02CADF9880095E5FA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 7XXG4VJQ59;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = com.stevengharris.MyProductCKLib;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		AAEB56F12CADF9880095E5FA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 7XXG4VJQ59;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = com.stevengharris.MyProductCKLib;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -560,6 +878,24 @@
 			buildConfigurations = (
 				AADAF4A92CAC9DF8009B6744 /* Debug */,
 				AADAF4AA2CAC9DF8009B6744 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AAEB56E12CADF9610095E5FA /* Build configuration list for PBXNativeTarget "MyProductCK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AAEB56DF2CADF9610095E5FA /* Debug */,
+				AAEB56E02CADF9610095E5FA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AAEB56EF2CADF9880095E5FA /* Build configuration list for PBXNativeTarget "MyProductCKLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AAEB56F02CADF9880095E5FA /* Debug */,
+				AAEB56F12CADF9880095E5FA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -1,6 +1,6 @@
 //
 //  MyModel.swift
-//  MyProduct
+//  MyProductLib
 //
 //  Created by Steven Harris on 10/1/24.
 //
