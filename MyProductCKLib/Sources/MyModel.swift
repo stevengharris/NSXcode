@@ -15,9 +15,22 @@ public struct MyModel {
     }
     
     // A method that will crash if CloudKit entitlements are not properly enabled
-    public static func helloCloudKit() -> String {
-        let _ = CKContainer(identifier: "iCloud.com.stevengharris.MyProductCK")
+    public static func helloCloudKit(_ container: String? = nil) -> String {
+        let identifier = container ?? "iCloud.com.stevengharris.MyProductCK"
+        let _ = CKContainer(identifier: identifier)
         return "Hello, CloudKit!"
     }
-
+    
+    // For consistency with the existing node-swift example...
+    
+    public static let nums: Array<Double> = [Double.pi.rounded(.down), Double.pi.rounded(.up)]
+    
+    public static let str = String(repeating: "NodeSwift! ", count: 3)
+    
+    public static func add(a: Double, b: Double) async -> String {
+        print("calculating...")
+        try? await Task.sleep(nanoseconds: 500_000_000)
+        return "\(a) + \(b) = \(a + b)"
+    }
+    
 }

@@ -28,18 +28,7 @@ The Swift entry points you expose to Node.js *cannot* reside in source files tha
 
 ## Do You Need Restricted Entitlements?
 
-Your project may require capabilities/entitlements that are only available with a provisioning profile. For example, iCloud access is only available with entitlements that are in turn tied to your provisioning profile. The entire concept of restricted entitlements applies to an app bundle, but here we are building a Node module. 
-
-There is an [excellent article](https://developer.apple.com/documentation/xcode/signing-a-daemon-with-a-restricted-entitlement) about how to deal with this problem when developing a daemon in Swift, which applies reasonably well here. However, in our case, we also have to deal with code signing, which has its own set of challenges as described in a series of tech notes:
-
-* [TN3125: Inside Code Signing: Provisioning Profiles](https://developer.apple.com/documentation/technotes/tn3125-inside-code-signing-provisioning-profiles).
-* [TN3126: Inside Code Signing: Hashes](https://developer.apple.com/documentation/technotes/tn3126-inside-code-signing-hashes)
-* [TN3127: Inside Code Signing: Requirements](https://developer.apple.com/documentation/technotes/tn3127-inside-code-signing-requirements)
-* [TN3161: Inside Code Signing: Certificates](https://developer.apple.com/documentation/technotes/tn3161-inside-code-signing-certificates)
-
-The process of embedding the Node module in an app bundle with the proper signing and entitlements also requires an understanding of the [app bundle](https://developer.apple.com/documentation/bundleresources/placing_content_in_a_bundle) structure and how it is normally signed within Xcode.
-
-Because the process to create a Node module that can take advantage of restricted entitlements requires additional steps, please read and try out the build targets and process for using node-swift in Xcode *without* restricted entitlements first. 
+Your project may require capabilities/entitlements that are only available with a provisioning profile. For example, iCloud access is only available with entitlements that are in turn tied to your provisioning profile. The entire concept of restricted entitlements applies to an app bundle, but here we are building a Node module. Unless you have the ability to embed node.js itself into an app bundle that has the proper entitlements, *you won't be able to invoke Swift code that requires entitlements from within the Node module*. To work around this limitation, you can access these kinds of functions from a CLI that you embed in an app bundle. We will discuss how to do that in a [separate section](#accessing-swift-code-requiring-restricted-entitlements) below.
 
 ## MyProject Build Targets Without Restricted Entitlements
 
@@ -88,14 +77,17 @@ npm run build
 
 #### Automating Node Module Builds
 
-You can create a post-build script by editing the `MyProductLib` scheme. Expand `Build` in the scheme editor for the library, so that you can see `Post-actions`. Add a script to execute `post-build-lib.sh` from within the `MyProductNS` directory:
+You can automate Node module builds by adding a Run Script in your library target (Build Phases -> "+ Button" -> Add New Run Script). In the example here, we use a script designed to be run from the `MyProductNS` directory:
 
 ```
 cd $PROJECT_DIR/MyProductNS
-sh post-build-lib.sh
+sh build-ns.sh
 ```
 
-The build script should be set to inherit the settings from the `MyProductLib` target. With this post-build script in place, your Node module will be updated every time you build `MyProductLib`.
+IMPORTANT: 
+
+* You need to set "User Script Sandboxing" to "NO" in MyProductLib's build settings (else you will see an error like "Sandbox: bash(2538) deny(1) file-read-data...").
+* Uncheck the "Based on dependency analysis" option so that your Node module updates every time you build MyProductLib. This will also include builds of MyProduct in the example here. You will want to adapt the flow to your specific project.
 
 ### Testing Your Node Module
 
@@ -115,9 +107,11 @@ calculating...
 5.0 + 10.0 = 15.0
 ```
 
-## Adding Restricted Entitlements To Your Node Module
+## Accessing Swift Code Requiring Restricted Entitlements
 
-As discussed [above](#do-you-need-restricted-entitlements?), using restricted entitlements requires us to place the `Module.node` and `libNodeAPI.dylib` created during the node-swift build process into an app bundle along with the entitlements, and get everything properly signed. To avoid entangling the basic discussion of using node-swift with Xcode with the complications of restricted entitlements, we use three different targets. The restricted entitlement being used in the example is iCloud.
+There is an [excellent article](https://developer.apple.com/documentation/xcode/signing-a-daemon-with-a-restricted-entitlement) about how to deal with this problem when developing a daemon in Swift, which applies reasonably well here. 
+
+As discussed [above](#do-you-need-restricted-entitlements), using restricted entitlements requires us to place the `Module.node` and `libNodeAPI.dylib` created during the node-swift build process into an app bundle along with the entitlements, and get everything properly signed. To avoid entangling the basic discussion of using node-swift with Xcode with the complications of restricted entitlements, we use three different targets. The restricted entitlement being used in the example is iCloud.
 
 ### MyProject Build Targets For Restricted Entitlements
 
@@ -270,3 +264,18 @@ Thread 0 Crashed::  Dispatch queue: com.apple.main-thread
 49  dyld                                  0x7ff80c962345 start + 1909
 
 ```
+
+
+Steps to Wrap The Bare Product CLI
+
+1. Create MacOS App Target
+2. Remove Sandbox
+3. Remove AppIcon
+4. Remove all UI-based folders and .swift files (Preview Content, Assets, ContentView.swift, \*App.swift)
+5. In Build Settings...
+    * Remove Deployment -> Development Assets
+    * User Defined -> Enable_Previews -> NO
+    * Build Options -> Enable Debug Dylib Support -> NO
+6. Place main.swift in the folder with proper content, or otherwise marked @main. Generally don't need a bridging header.
+7. Add iCloud -> CloudKit -> iCloud.<com.stevengharris.MyProductCK>
+

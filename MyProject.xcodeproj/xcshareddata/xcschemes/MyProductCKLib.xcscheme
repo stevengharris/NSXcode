@@ -11,7 +11,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "# Build the Node module for MyProductCKLib&#10;cd $PROJECT_DIR/MyProductCKNS&#10;sh post-build-lib.sh&#10;">
+               scriptText = "sh $PROJECT_DIR/MyProductCKNS/build-cli.sh&#10;&#10;">
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"

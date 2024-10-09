@@ -11,13 +11,13 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "set -e&#10;set -x&#10;&#10;cd $PROJECT_DIR/MyProductCKNS&#10;sh post-build-lib.sh&#10;sh post-build-app.sh&#10;">
+               scriptText = "# The product has to be signed, so we cannot run as a script during build&#10;sh $PROJECT_DIR/MyProductCKNS/post-build-cli.sh&#10;">
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"
-                     BlueprintIdentifier = "AABE53B52CAEFE9F0077486A"
-                     BuildableName = "NSWrapper.app"
-                     BlueprintName = "NSWrapper"
+                     BlueprintIdentifier = "AA516AE32CB71CFE004D0AE6"
+                     BuildableName = "MyProductCLI.app"
+                     BlueprintName = "MyProductCLI"
                      ReferencedContainer = "container:MyProject.xcodeproj">
                   </BuildableReference>
                </EnvironmentBuildable>
@@ -33,9 +33,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AABE53B52CAEFE9F0077486A"
-               BuildableName = "NSWrapper.app"
-               BlueprintName = "NSWrapper"
+               BlueprintIdentifier = "AA516AE32CB71CFE004D0AE6"
+               BuildableName = "MyProductCLI.app"
+               BlueprintName = "MyProductCLI"
                ReferencedContainer = "container:MyProject.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -55,19 +55,29 @@
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
-      debugDocumentVersioning = "YES"
+      debugDocumentVersioning = "NO"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AABE53B52CAEFE9F0077486A"
-            BuildableName = "NSWrapper.app"
-            BlueprintName = "NSWrapper"
+            BlueprintIdentifier = "AA516AE32CB71CFE004D0AE6"
+            BuildableName = "MyProductCLI.app"
+            BlueprintName = "MyProductCLI"
             ReferencedContainer = "container:MyProject.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "--help"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-i iCloud.com.stevengarris.MyProductCK"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -79,9 +89,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AABE53B52CAEFE9F0077486A"
-            BuildableName = "NSWrapper.app"
-            BlueprintName = "NSWrapper"
+            BlueprintIdentifier = "AA516AE32CB71CFE004D0AE6"
+            BuildableName = "MyProductCLI.app"
+            BlueprintName = "MyProductCLI"
             ReferencedContainer = "container:MyProject.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -92,23 +102,5 @@
    <ArchiveAction
       buildConfiguration = "Release"
       revealArchiveInOrganizer = "YES">
-      <PreActions>
-         <ExecutionAction
-            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
-            <ActionContent
-               title = "Run Script"
-               scriptText = "set -e&#10;set -x&#10;&#10;cd $PROJECT_DIR/MyProductCKNS&#10;sh pre-archive.sh&#10;">
-               <EnvironmentBuildable>
-                  <BuildableReference
-                     BuildableIdentifier = "primary"
-                     BlueprintIdentifier = "AABE53B52CAEFE9F0077486A"
-                     BuildableName = "NSWrapper.app"
-                     BlueprintName = "NSWrapper"
-                     ReferencedContainer = "container:MyProject.xcodeproj">
-                  </BuildableReference>
-               </EnvironmentBuildable>
-            </ActionContent>
-         </ExecutionAction>
-      </PreActions>
    </ArchiveAction>
 </Scheme>

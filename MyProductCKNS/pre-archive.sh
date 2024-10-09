@@ -14,4 +14,4 @@ rm -R "$TARGET_BUILD_DIR/$EXECUTABLE_NAME.app"
 
 # Copy the app bundle containing Module.node into the target build directory as $EXECUTABLE_NAME.app
 # so that it will be archived using all the settings for the original.
-cp -R ./$EXECUTABLE_NAME.app "$TARGET_BUILD_DIR/$EXECUTABLE_NAME.app"
+cp -R ./Module.app "$TARGET_BUILD_DIR/$EXECUTABLE_NAME.app"

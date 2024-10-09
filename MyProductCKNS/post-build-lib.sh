@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# A script run from the MyProductCKLib target to build Module.node and libNodeAPI.dylib
+# A script run from the MyProductLib target to build Module.node and libNodeAPI.dylib
 
 # IMPORTANT:
 #
@@ -15,7 +15,7 @@
 
 if [[ "$ACTION" == "clean" ]]; then
     echo "Build script skipped for clean"
-    exit 
+    exit
 fi
 
 set -e
@@ -39,5 +39,6 @@ if [[ "$MODE" == "debug" ]]; then
 else
     BUILDSCRIPT="build"
 fi
-rm -rf ./.build/$MODE   # Remove the previous build
+
+rm -rf ./.build/$MODE           # Remove the previous build
 npm run $BUILDSCRIPT
