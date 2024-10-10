@@ -1,11 +1,11 @@
 #!/bin/sh
 
-# A script run from the MyProductLib target to build Module.node and libNodeAPI.dylib
+# A script run from the MyProductCKLib target to build Module.node and libNodeAPI.dylib
 
 # IMPORTANT:
 #
-# 1. The script depends on the build settings from MyProduct.
-# 2. The script should be run from the directory containing the .build directory, MyProductNS.
+# 1. The script depends on the build settings from MyProductCKLib.
+# 2. The script should be run from the directory containing the .build directory, MyProductCKNS.
 # 3. Install node-swift as a dependency in this directory ($TARGET_BUILD_DIR) once by
 #    running 'npm install <relative path to node-swift directory>'.
 # 4. To use in a VSCode extension, this directory needs to installed as a dependency once by
@@ -15,7 +15,7 @@
 
 if [[ "$ACTION" == "clean" ]]; then
     echo "Build script skipped for clean"
-    exit 
+    exit
 fi
 
 set -e
@@ -39,5 +39,6 @@ if [[ "$MODE" == "debug" ]]; then
 else
     BUILDSCRIPT="build"
 fi
-rm -rf ./.build/$MODE   # Remove the previous build
+
+rm -rf ./.build/$MODE           # Remove the previous build
 npm run $BUILDSCRIPT

@@ -1,6 +1,6 @@
 //
-//  MyProjectTool.swift
-//  MyProject
+//  MyProductTool.swift
+//  MyProductCLI
 //
 //  Created by Steven Harris on 10/8/24.
 //
@@ -8,9 +8,10 @@
 import MyProductCKLib
 import ArgumentParser
 
-@main struct MyProjectTool: AsyncParsableCommand {
+@main
+struct MyProductTool: AsyncParsableCommand {
     
-    static let configuration = CommandConfiguration(commandName: "myproject")
+    static let configuration = CommandConfiguration(commandName: "myproduct")
     
     @Option(name: [.short, .customLong("icloud")], help: ArgumentHelp("Check iCloud access.", valueName: "container"))
     var iCloudContainer: String?

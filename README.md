@@ -1,12 +1,17 @@
 # NSXcode
 
-Using node-swift with an existing Xcode project
+Using NodeSwift with an existing Xcode project
 
 ###
 
 ## Background
 
-NSXcode contains an example Xcode project that makes some of its Swift functionality callable from Node.js using the [NodeSwift](https://github.com/kabiroberai/node-swift) project. The NodeSwift project contains an example within it, but like me, many users will come at it with existing Xcode projects in-place. This repository and README provide documentation about how to take an existing Xcode project and make some of its functionality available to Node.js. 
+NSXcode contains an example Xcode project that makes some of its Swift functionality callable from Node.js using the [NodeSwift](https://github.com/kabiroberai/node-swift) project. The NodeSwift project contains an example within it, but like me, many users will come at it with existing Xcode projects in-place. Building on the [NodeSwift example](https://github.com/kabiroberai/node-swift/tree/main/example), this repository and README provide documentation about how to take an existing Xcode project and make some of its functionality available to Node.js, including:
+
+* Setting up the node-swift build directory for your Xcode project
+* Using an Xcode Run Script to build the Node module for your Xcode project
+* Dealing with Swift code that requires restricted entitlements (e.g., iCloud)
+* Making creation of the Node module a transparent part of your Xcode project build process
 
 As stated in the [NodeSwift README](https://github.com/kabiroberai/node-swift):
 
@@ -24,34 +29,34 @@ You should have [Node.js](https://nodejs.org/en) and npm installed. The project 
 
 Clone the [node-swift](https://github.com/kabiroberai/node-swift) repo locally. You should use a local copy because at this time, node-swift from npm is out of date, per [this issue](https://github.com/kabiroberai/node-swift/issues/13).
 
-The Swift entry points you expose to Node.js *cannot* reside in source files that import or depend on UI modules - SwiftUI, UIKit, or AppKit. If you want to expose entry points in an existing project that includes UI, you should start by factoring-out a separate library without UI dependencies which you can then have your existing project depend on and import. In the SwiftUI example here, `MyProduct`, the `ContentView` displays "Hello, world!" using a `MyModel` struct that is build in the `MyProductLib` framework that `MyProduct` depends on.
+The Swift entry points you expose to Node.js *cannot* reside in source files that import or depend on UI modules - SwiftUI, UIKit, or AppKit. If you want to expose entry points in an existing project that includes UI, you should start by factoring-out a separate library without UI dependencies which you can then have your existing project depend on and import. In the SwiftUI example here, `MyProduct`, the `ContentView` displays "Hello, world!" using a `MyModel` struct that is built in the `MyProductLib` framework that `MyProduct` depends on.
 
 ## Do You Need Restricted Entitlements?
 
-Your project may require capabilities/entitlements that are only available with a provisioning profile. For example, iCloud access is only available with entitlements that are in turn tied to your provisioning profile. The entire concept of restricted entitlements applies to an app bundle, but here we are building a Node module. Unless you have the ability to embed node.js itself into an app bundle that has the proper entitlements, *you won't be able to invoke Swift code that requires entitlements from within the Node module*. To work around this limitation, you can access these kinds of functions from a CLI that you embed in an app bundle. We will discuss how to do that in a [separate section](#accessing-swift-code-requiring-restricted-entitlements) below.
+Your project may require capabilities/entitlements that are only available with a provisioning profile. For example, iCloud access is only available with entitlements that are in turn tied to your provisioning profile. The entire concept of restricted entitlements applies to an app bundle, but here we are building a Node module. *You won't be able to execute Swift code that requires entitlements using NodeSwift*. To work around this limitation, you can access these kinds of functions from a CLI that you embed in an app bundle. We will discuss how to do that in a [separate section](#accessing-swift-code-requiring-restricted-entitlements) below.
 
-## MyProject Build Targets Without Restricted Entitlements
+## Builds Without Restricted Entitlements
 
 `MyProject` contains two build targets that are free of the complications of restricted entitlements:
 
-1. `MyProduct`: This target is used as the simplest baseline, an example of an existing Xcode project. It is the equivalent of the standard Xcode-produced target for a SwiftUI app (although everything here applies to any UI dependent app). The target was modified to remove the App Sandbox capability. Note the Hardened Runtime capability default was left in place. The "Hello, world!" string is returned from `MyModel` which is built as part of `MyProductLib` target.
+1. `MyProduct`: This target is used as the simplest baseline, an example of an existing Xcode project. It is the equivalent of the standard Xcode-produced target for a SwiftUI app (although everything here applies to any UI-dependent app). The target was modified to remove the App Sandbox capability. Note the Hardened Runtime capability default was left in place. The "Hello, world!" string is returned from `MyModel` which is built as part of `MyProductLib` target.
 
 2. `MyProductLib`: This builds the framework that both `MyProduct` and the Node module depend on. Note that `MyProductLib` has no dependency on NodeSwift. It is just a way to:
 
         * Factor-out non-UI code containing functions/methods we want to expose to Node.js.
-        * Define a Package.swift that can be identified as a package dependency when we build the Node module separately.
+        * Define a `Package.swift` that can be identified as a package dependency when we build the Node module separately.
         
-In addition to these two normal Xcode build targets, we use a `MyProductNS` directory used to build the Node module. This is the equivalent of the example in the node-swift repository, but it exposes an entry point in MyProductLib to Node.js. (Note also that MyProductLib includes a [post-build step](#automating-node-module-builds) to automate the Node module build process.)
+In addition to these two normal Xcode build targets, we use a `MyProductNS` directory to build the Node module. This is the equivalent of the [example](https://github.com/kabiroberai/node-swift/tree/main/example) in the node-swift repository, but it exposes an entry point in MyProductLib to Node.js. (Note also that MyProductLib Build Phases include a [Run Script to automate](#automating-node-module-builds) the Node module build process.)
 
 ### Setting Up MyProductNS To Build The Node Module
 
-The following steps were required to set up the `MyProductNS` directory in a way that can build the Node module and make it easy to iterate with changes in the Xcode project.
+The NodeSwift build process and the definition of the entry points that are exposed to Node.js are defined in the `MyProductNS` directory. The following steps were required to set up the `MyProductNS` directory in a way that can build the Node module and make it easy to iterate with changes in the Xcode project.
 
-1. Add a `package.json` modeled on the one in the [node-swift example](https://github.com/kabiroberai/node-swift/tree/main/example). You can leave the dependencies section empty initially.
+1. Add a `package.json` modeled on the one in the NodeSwift  [example](https://github.com/kabiroberai/node-swift/tree/main/example). You can leave the dependencies section empty initially.
 
 2. Install `node-swift` as a dependency using `npm install <relative path to the node-swift repo you cloned>`. This creates a symlink in your `node_modules` directory and updates the dependencies section of `package.json`.
 
-3. Set up a `Package.swift` that can be used by the NodeSwift build process. The `Package.swift` here references the `MyProjectLib` package as a dependency, the same one the `MyProject` app depends on. Make sure `Package.swift` opens and resolves its dependencies correctly, since the node-swift build uses `Package.swift` (along with `package.json`) to build `Module.node`, the Node module. If you open Xcode on `Package.swift`, you should be able to build the `MyProductNS` library target, but this is not particularly useful.
+3. Set up a `Package.swift` that can be used by the NodeSwift build process. The `Package.swift` here references the `MyProjectLib` package as a dependency, the same one the `MyProject` app depends on. Make sure `Package.swift` opens and resolves its dependencies correctly, since the NodeSwift build uses `Package.swift` (along with `package.json`) to build the Node module (`Module.node`) and the dynamic library it uses (`libNodeAPI.dylib`). If you open Xcode on `Package.swift`, you should be able to build the `MyProductNS` library target, but this is not particularly useful.
 
 4. In the Sources used by your `Package.swift`, define your NodeSwift module exports, the entry points on the Swift side that can be exposed to Node.js. Reminder: The Swift entry points *cannot* reside in source files that import or depend on UI modules - SwiftUI, UIKit, or AppKit. In our example, the Node module exports reference code in `MyProductLib`, so the `MyProductLib` Swift module has to be imported.
 
@@ -61,11 +66,11 @@ Tip: If you set up your own version of `MyProjectNS`, be careful that files like
 
 ### Building the Node Module
 
-You can build the Node module manually, or you can use a post-build script for `MyProductLib`, which is the Node module's only project dependency. 
+You can build the Node module manually, or you can use a Run Script for `MyProductLib`, which is the Node module's only project dependency. 
 
 The result of the build will be a Node module, `Module.node`, symlinked in the `.build` directory, along with a `libNodeAPI.dylib` that `Module.node` uses. The `Module.node` symlink points to either the `debug` or `release` directory (depending on the type of build) that contains `libNodeAPI.dylib`. These files/directories are in turn symlinked to the "build architecture" directory. All of this symlinking is just a convenience mechanism so that the `index.js` file loaded at Node.js execution time can use `require("./.build/Module.node")` to access the Swift entry points defined in `MyModuleExports.swift` in the `MyModuleLib` Swift module.
 
-The first time you do the build, it takes a long time because of NodeSwift's dependency on [Swift Syntax](https://github.com/swiftlang/swift-syntax). Subsequent builds are reasonably fast.
+Warning: The first time you do the build, it takes a long time because of NodeSwift's dependency on [Swift Syntax](https://github.com/swiftlang/swift-syntax). Subsequent builds are reasonably fast.
 
 #### Building the Node Module Manually
 
@@ -77,7 +82,7 @@ npm run build
 
 #### Automating Node Module Builds
 
-You can automate Node module builds by adding a Run Script in your library target (Build Phases -> "+ Button" -> Add New Run Script). In the example here, we use a script designed to be run from the `MyProductNS` directory:
+You can automate Node module builds by adding a Run Script in your library target (Build Phases -> "+ Button" -> Add New Run Script). In the example here, we use a script in the `MyProductLib` build target. It is designed to be run from the `MyProductNS` directory:
 
 ```
 cd $PROJECT_DIR/MyProductNS
@@ -107,175 +112,176 @@ calculating...
 5.0 + 10.0 = 15.0
 ```
 
-## Accessing Swift Code Requiring Restricted Entitlements
+### Xcode Development Process With NodeSwift
 
-There is an [excellent article](https://developer.apple.com/documentation/xcode/signing-a-daemon-with-a-restricted-entitlement) about how to deal with this problem when developing a daemon in Swift, which applies reasonably well here. 
+The sample project here uses `build-ns.sh` as a Run Script for `MyProductLib`. Thus, if you make a change to the Swift code that is invoked and rebuild either MyProduct or MyProductLib, the changes will be show up when you run `node index.js` again. Similarly, if you want to expose other Swift entry points to Node.js, you would edit `MyModelExports.swift` in `Sources/MyProductNS` to do that and make a corresponding change to `index.js`. Then, by rebuilding MyProduct or MyProductLib, your changed Swift entry points are available and can be tested using `node index.js`.
 
-As discussed [above](#do-you-need-restricted-entitlements), using restricted entitlements requires us to place the `Module.node` and `libNodeAPI.dylib` created during the node-swift build process into an app bundle along with the entitlements, and get everything properly signed. To avoid entangling the basic discussion of using node-swift with Xcode with the complications of restricted entitlements, we use three different targets. The restricted entitlement being used in the example is iCloud.
+## Builds With Restricted Entitlements
 
-### MyProject Build Targets For Restricted Entitlements
+You should be sure to read the [section](#builds-without-restricted-entitlements) above before this section.
 
-#### *Less formal discussion, since the resulting Node module crashes at iCloud-entitled access...*
+Swift code that requires restricted entitlements cannot be used with NodeSwift. If you try to do so, Node.js will load `Module.node` and `libNodeAPI.dylib` without errors, but when you execute the Swift code requiring restricted entitlements, the Node.js server will crash. You will be greeted with a helpful error like: `Illegal instruction: 4`, and you can examine the MacOS crash logs to find details.
 
-This is all on an Intel-based iMac running Sonoma 14.6.1 (to minimize the number of variables changing) and Xcode 16.0 (16A242d).
+> Note: If you find a way around this limitation, please raise an issue in this repository. As far as I can tell, no amount of code signing and app-bundle-wrapping of `Module.node` and `libNodeAPI.dylib` helps. You might be able to embed Node.js in an app bundle that contains the entitlements, but this was not practical for me.
 
-I use the same "normal" Xcode targets as before, but with "CK" in their name. The target specifies iCloud entitlements and exports an additional entry point:
+There is a non-NodeSwift workaround for accessing Swift code that requires restricted entitlements. I'm including a discussion of the workaround here because I need to use it alongside my use of NodeSwift. A Node.js person might not even call this a workaround, since it seems to be the standard mechanism for accessing Go libraries from Node.js, but it will be less efficient and flexible than using NodeSwift.
 
-```
-    "iCloud": try NodeFunction { _ in
-        MyModel.helloCloudKit()
-    },
-```
+The workaround consists of:
 
-The `MyModel.helloCloudKit()` method creates an instance of `CKContainer`, which requires the iCloud entitlement:
+* Create a CLI for the entry points that require restricted entitlements.
+* Wrap your CLI in an app bundle that includes the entitlements. There is an [excellent article](https://developer.apple.com/documentation/xcode/signing-a-daemon-with-a-restricted-entitlement) about how to deal with this issue when developing a daemon in Swift, which applies reasonably well here. 
+* Use the Node.js child\_process mechanism to invoke the CLI.
 
-```
-    // A method that will crash if CloudKit entitlements are not properly enabled
-    public static func helloCloudKit() -> String {
-        let _ = CKContainer(identifier: "iCloud.com.stevengharris.MyProductCK")
-        return "Hello, CloudKit!"
-    }
-```
+To keep the complications out of the discussion of NodeSwift and Xcode, there are three separate build targets in the project associated with restricted entitlements:
 
-If you build `MyProductCK`, it results in a window showing "Hello, world!" and "Hello, CloudKit!". If you do that without the iCloud entitlements, Xcode informs you:
+1. MyProductCK - The same as MyProduct, but with iCloud entitlements and a dependency on MyProductCKLib.
 
-> In order to use CloudKit, your process must have a com.apple.developer.icloud-services entitlement. The value of this entitlement must be an array that includes the string "CloudKit" or "CloudKit-Anonymous".
+2. MyProductCKLib - The same as MyProductLib, but includes a single function that depends on CloudKit. Note that this library (like any library) does not have entitlements, but the apps that consume it do.
 
-The node-swift build is done in the `MyProductCKNS` directory (via `npm run build`), producing `.build/Module.node` and `.build/debug/libNodeAPI.dylib`.
+3. MyProductCLI - An app - not actually a CLI executable - that has iCloud entitlements and a dependency on MyProductCKLib.
 
-As would be expected, because there is no iCloud entitlement set up at thsi point, the result of `node index.js` crashes, showing that the "hello" execution works, but the "iCloud" execution fails when instantiating the `CKContainer`:
+Perhaps unsurprisingly, the setup for building NodeSwift is pretty much the same as was [outlined above](#setting-up-myproductns-to-build-the-node-module). The steps to automate the Xcode build is similar but has to be augmented with additional steps to produce the CLI.
 
-```
-Hello, world!
-Illegal instruction: 4
-```
+### Creating A Wrapped CLI
 
-There is an additional `NSWrapper` app target that provides the minimal `NSWrapper.app` bundle that `Module.node` and `libNodeAPI.dylib` can be inserted into and re-signed. I did this because I don't really want to have to build my full UI app; I'd rather just have some placeholder that depends on the non-UI library that has the functionality I'm trying to access.
+Creating a CLI in Xcode is as simple as creating a new "Command Line" target. That will produce a target that creates an executable, but you won't be able to add entitlements to it, because entitlements are only associated with app bundles. Your CLI executable can, however, be placed in an app bundle using the following steps, which are based on the [article](https://developer.apple.com/documentation/xcode/signing-a-daemon-with-a-restricted-entitlement) about signing a daemon with a restricted entitlement.
 
-I use the `MyProductCKNS/post-build-app.sh` script to do the work, because it's a lot easier to generalize if you have access to the exports from the Xcode build target. 
+1. Create a MacOS "App" target. I chose SwiftUI as the "interface", but the choice only changes what kind of code you need to delete and which build settings you need to modify.
 
-**NOTE:** You must identify the cert you're using in the NSWrapper Xcode target. For example, line 52 of post-build-app.sh shows `CERT_ID="Apple Development: Steven Harris (77AW2CW22Z)"`, but should identify your signing certificate name.
+2. Remove the "App Sandbox" from the Signing \& Capabilities tab.
 
-If you build `NSWrapper` in Xcode, it does the following in a post-build action:
+3. Remove the "App Icon" from the General tab.
 
-```
-set -e
-set -x
+4. Remove all UI-based folders and .swift files. For SwiftUI, this includes: Preview Content, Assets, ContentView.swift, \*App.swift).
 
-cd $PROJECT_DIR/MyProductCKNS
-sh post-build-lib.sh
-sh post-build-app.sh
-```
-
-The `post-build-lib` step creates `Module.node` and `libNodeAPI.dylib`. The `post-build-app` step copies `NSWrapper.app` into the .build directory, places `Module.node` into `NSWrapper.app/Contents/MacOS` and `libNodeAPI.dylib` into `NSWrapper.app/Contents/Frameworks`, doing the required code signing. As part of the process, I have to add to the rpath using install_name_tool on Module.node, which produces this warning, which is to be expected.
-
-```
-warning: changes being made to the file will invalidate the code signature in: ./NSWrapper.app/Contents/MacOS/Module.node
-```
-
-Later steps do the code signing, which verifies properly for both NSWrapper.app and Module.node (using `codesign -dvvvv`), and node loads the resulting Node module properly using `node index.js`. Unfortunately, I still end up with the same `Illegal instruction: 4` crash.
-
-Crash logs look like:
-
-```
--------------------------------------
-Translated Report (Full Report Below)
--------------------------------------
-
-Process:               node [75148]
-Path:                  /Users/USER/*/node
-Identifier:            node
-Version:               ???
-Code Type:             X86-64 (Native)
-Parent Process:        bash [46697]
-Responsible:           Terminal [5931]
-User ID:               501
-
-Date/Time:             2024-10-03 14:33:43.6742 -0700
-OS Version:            macOS 14.6.1 (23G93)
-Report Version:        12
-Anonymous UUID:        D8F42156-6EB3-6538-461B-FD1C371AE765
-
-Sleep/Wake UUID:       724C5B82-0602-43F7-B6C2-B1BBA6F2FAE0
-
-Time Awake Since Boot: 1000000 seconds
-Time Since Wake:       6859 seconds
-
-System Integrity Protection: enabled
-
-Crashed Thread:        0  Dispatch queue: com.apple.main-thread
-
-Exception Type:        EXC_BAD_INSTRUCTION (SIGILL)
-Exception Codes:       0x0000000000000001, 0x0000000000000000
-
-Termination Reason:    Namespace SIGNAL, Code 4 Illegal instruction: 4
-Terminating Process:   exc handler [75148]
-
-Thread 0 Crashed::  Dispatch queue: com.apple.main-thread
-0   CloudKit                              0x7ff815d135db 0x7ff815c32000 + 923099
-1   CloudKit                              0x7ff815c69776 0x7ff815c32000 + 227190
-2   CloudKit                              0x7ff815c696a1 0x7ff815c32000 + 226977
-3   Module.node                              0x10c26f355 @nonobjc CKContainer.__allocating_init(identifier:) + 53
-4   Module.node                              0x10c26f2a7 static MyModel.helloCloudKit() + 55 (MyModel.swift:19)
-5   Module.node                              0x10c27029f closure #2 in closure #1 in $s13MyProductCKNS0025MyModelExportsswift_jqFBgfMX10_0_030_EDDBA243063FBD398423E0B1253E8F1BLl10NodeModulefMf_8registerfMu_(env:) + 207 (MyModelExports.swift:16)
-6   libNodeAPI.dylib                         0x10c3f4755 thunk for @escaping @callee_guaranteed @Sendable (@guaranteed NodeArguments) -> (@out NodeValueConvertible, @error @owned Error) + 37
-7   libNodeAPI.dylib                         0x10c3f47c4 partial apply for thunk for @escaping @callee_guaranteed @Sendable (@guaranteed NodeArguments) -> (@out NodeValueConvertible, @error @owned Error) + 20
-8   libNodeAPI.dylib                         0x10c3f150a closure #1 in cCallback(rawEnv:info:) + 778 (NodeFunction.swift:11)
-9   libNodeAPI.dylib                         0x10c3f1720 partial apply for closure #1 in cCallback(rawEnv:info:) + 16
-10  libNodeAPI.dylib                         0x10c3e3463 static NodeContext._withContext<A>(_:environment:isTopLevel:do:) + 499 (NodeContext.swift:46)
-11  libNodeAPI.dylib                         0x10c3e57bc closure #1 in static NodeContext.withContext<A>(environment:isTopLevel:do:) + 364 (NodeContext.swift:113)
-12  libNodeAPI.dylib                         0x10c3e5865 partial apply for closure #1 in static NodeContext.withContext<A>(environment:isTopLevel:do:) + 53
-13  libswift_Concurrency.dylib            0x7ffc25e03b3a TaskLocal.withValue<A>(_:operation:file:line:) + 186
-14  libNodeAPI.dylib                         0x10c3e503f static NodeContext.withContext<A>(environment:isTopLevel:do:) + 895 (NodeContext.swift:112)
-15  libNodeAPI.dylib                         0x10c3e5b3d closure #1 in static NodeContext.withUnsafeEntrypoint<A>(_:action:) + 285 (NodeContext.swift:127)
-16  libNodeAPI.dylib                         0x10c3e5c04 partial apply for closure #1 in static NodeContext.withUnsafeEntrypoint<A>(_:action:) + 36
-17  libNodeAPI.dylib                         0x10c3be96f thunk for @callee_guaranteed @Sendable () -> (@out A, @error @owned Error) + 15
-18  libNodeAPI.dylib                         0x10c3be9ec partial apply for thunk for @callee_guaranteed @Sendable () -> (@out A, @error @owned Error) + 28
-19  libNodeAPI.dylib                         0x10c3bead0 closure #1 in static NodeActor.unsafeAssumeIsolated<A>(_:) + 208 (NodeActor.swift:119)
-20  libNodeAPI.dylib                         0x10c3bd439 static NodeActor.unsafeAssumeIsolated<A>(_:) + 137 (NodeActor.swift:118)
-21  libNodeAPI.dylib                         0x10c3e59f7 static NodeContext.withUnsafeEntrypoint<A>(_:action:) + 231 (NodeContext.swift:126)
-22  libNodeAPI.dylib                         0x10c3e58f2 static NodeContext.withUnsafeEntrypoint<A>(_:action:) + 130 (NodeContext.swift:122)
-23  libNodeAPI.dylib                         0x10c3f11e1 cCallback(rawEnv:info:) + 321 (NodeFunction.swift:7)
-24  libNodeAPI.dylib                         0x10c3f4cef closure #1 in closure #1 in closure #1 in NodeFunction.init(name:callback:) + 191 (NodeFunction.swift:90)
-25  libNodeAPI.dylib                         0x10c3f4d19 @objc closure #1 in closure #1 in closure #1 in NodeFunction.init(name:callback:) + 9
-26  node                                     0x1063dddb0 v8impl::(anonymous namespace)::FunctionCallbackWrapper::Invoke(v8::FunctionCallbackInfo<v8::Value> const&) + 128
-27  node                                     0x10664eb58 v8::internal::MaybeHandle<v8::internal::Object> v8::internal::(anonymous namespace)::HandleApiCallHelper<false>(v8::internal::Isolate*, v8::internal::Handle<v8::internal::HeapObject>, v8::internal::Handle<v8::internal::FunctionTemplateInfo>, v8::internal::Handle<v8::internal::Object>, unsigned long*, int) + 856
-28  node                                     0x10664e11a v8::internal::Builtin_HandleApiCall(int, unsigned long*, v8::internal::Isolate*) + 186
-29  node                                     0x106ffa436 Builtins_CEntry_Return1_ArgvOnStack_BuiltinExit + 54
-30  node                                     0x106f6bf1c Builtins_InterpreterEntryTrampoline + 220
-31  node                                     0x106f6bf1c Builtins_InterpreterEntryTrampoline + 220
-32  node                                     0x106f6bf1c Builtins_InterpreterEntryTrampoline + 220
-33  node                                     0x106f6bf1c Builtins_InterpreterEntryTrampoline + 220
-34  node                                     0x106f6bf1c Builtins_InterpreterEntryTrampoline + 220
-35  node                                     0x106f6bf1c Builtins_InterpreterEntryTrampoline + 220
-36  node                                     0x106f6bf1c Builtins_InterpreterEntryTrampoline + 220
-37  node                                     0x106f6a2dc Builtins_JSEntryTrampoline + 92
-38  node                                     0x106f6a003 Builtins_JSEntry + 131
-39  node                                     0x1067325af v8::internal::(anonymous namespace)::Invoke(v8::internal::Isolate*, v8::internal::(anonymous namespace)::InvokeParams const&) + 3279
-40  node                                     0x1067318c5 v8::internal::Execution::Call(v8::internal::Isolate*, v8::internal::Handle<v8::internal::Object>, v8::internal::Handle<v8::internal::Object>, int, v8::internal::Handle<v8::internal::Object>*) + 213
-41  node                                     0x1066007e6 v8::Function::Call(v8::Local<v8::Context>, v8::Local<v8::Value>, int, v8::Local<v8::Value>*) + 502
-42  node                                     0x10640a917 node::builtins::BuiltinLoader::CompileAndCall(v8::Local<v8::Context>, char const*, node::Realm*) + 311
-43  node                                     0x1064ad150 node::Realm::ExecuteBootstrapper(char const*) + 64
-44  node                                     0x1063eab07 node::StartExecution(node::Environment*, std::__1::function<v8::MaybeLocal<v8::Value> (node::StartExecutionCallbackInfo const&)>) + 2183
-45  node                                     0x10633e637 node::LoadEnvironment(node::Environment*, std::__1::function<v8::MaybeLocal<v8::Value> (node::StartExecutionCallbackInfo const&)>, std::__1::function<void (node::Environment*, v8::Local<v8::Value>, v8::Local<v8::Value>)>) + 279
-46  node                                     0x106474b80 node::NodeMainInstance::Run(node::ExitCode*, node::Environment*) + 272
-47  node                                     0x10647489c node::NodeMainInstance::Run() + 124
-48  node                                     0x1063ee642 node::Start(int, char**) + 850
-49  dyld                                  0x7ff80c962345 start + 1909
-
-```
-
-
-Steps to Wrap The Bare Product CLI
-
-1. Create MacOS App Target
-2. Remove Sandbox
-3. Remove AppIcon
-4. Remove all UI-based folders and .swift files (Preview Content, Assets, ContentView.swift, \*App.swift)
 5. In Build Settings...
     * Remove Deployment -> Development Assets
     * User Defined -> Enable_Previews -> NO
     * Build Options -> Enable Debug Dylib Support -> NO
-6. Place main.swift in the folder with proper content, or otherwise marked @main. Generally don't need a bridging header.
-7. Add iCloud -> CloudKit -> iCloud.<com.stevengharris.MyProductCK>
 
+6. Place a `main.swift` in the folder with proper content, or otherwise marked @main. If asked, don't create a bridging header.
+
+7. Add the entitlements you need. 
+
+8. In the Scheme editor for the CLI (`MyProductCLI`)...
+    * Add a Run argument to test when the CLI builds. Here for example: `-i iCloud.com.stevengarris.MyProductCK`. This will let you know the CLI is working correctly by showing the print of "Hello CloudKit!" in the console.
+    * Uncheck the Run Options -> Document Versions item to avoid having Xcode pass a "-NSDocumentRevisionsDebugMode" argument that will mess up your argument parsing.
+
+### MyProductCLI Example
+
+The `MyProductCLI` example uses `MyProjectTool.swift` for @main. The `MyProjectTool` struct depends on `MyProjectCKLib` and `ArgumentParser`. If you have not created a Swift CLI before, the [tutorial](https://www.swift.org/getting-started/cli-swiftpm/) on the swift.org web site is a good starting point. The example uses a `AsyncParsableCommand` because I want to wait on responses from iCloud, but your usage my not call for it.
+
+The test that the entitlements work is a simple as possible: creating an instance of CKContainer. This code will fail without the entitlements. In Xcode, you will see a useful message in the console telling you you're missing the entitlements.
+
+In the Signing and Capabilities tab, I used iCloud -> CloudKit -> `iCloud.com.stevengharris.MyProductCK`. If you are just trying out the example, you can point at any existing CloudKit container you have, because the example only instantiates a CKContainer and does no actual interaction with iCloud across the network - don't worry! However, if you've never used iCloud before, Xcode will create a container for you as soon as you identify it, and [that container will live forever](https://forums.developer.apple.com/forums/thread/45251).
+
+### Running the Wrapped CLI
+
+If you build the `MyProductCLI` target, you can run the CLI from the command line by locating the app and invoking the executable that resides inside of it. For a debug build, the app will reside at `~/Library/Developer/Xcode/DerivedData/Build/Products/Debug/MyProductCLI.app`, and the actual CLI is at ~/Library/Developer/Xcode/DerivedData/Build/Products/Debug/MyProductCLI.app/Contents/MacOS/MyProductCLI`. So, execute the wrapped CLI from the command line with the help option using:
+
+```
+~/Library/Developer/Xcode/DerivedData/Build/Products/Debug/MyProductCLI.app/Contents/MacOS/MyProductCLI -h
+```
+
+This will produce:
+
+```
+USAGE: myproduct [--icloud <container>]
+
+OPTIONS:
+  -i, --icloud <container>
+                          Check iCloud access.
+  -h, --help              Show help information.
+```
+
+Passing the container name using the -i option:
+
+```
+~/Library/Developer/Xcode/DerivedData/Build/Products/Debug/MyProductCLI.app/Contents/MacOS/MyProductCLI -i iCloud.com.stevengharris.MyProductCK
+```
+
+instantiates a CKContainer and then prints the following to stdout:
+
+```
+Hello, CloudKit!
+```
+
+The fact we see `Hello, CloudKit!` is showing that the entitlements are applied properly to the containing app bundle.
+
+### Automating Node Module and CLI Builds
+
+#### TL;DR
+
+1. Use a Run Script invoking `build-ns.sh` on the library (MyProductCKLib) to build the Node module.
+2. Use a post-build action `build-cli.sh` to build `MyProductCLI` after the library (MyProductCKLib) build. This script invokes `post-build-cli.sh` when the build is done. 
+3. Use a post-build action `post-build-cli.sh` to put the CLI app and a symlink to the executable into `MyProductCKNS/.build` alongside the `Module.node` produced by NodeSwift.
+
+#### Details
+
+There are quite a few steps to build both the Node module for NodeSwift *and* the CLI and then place the wrapped CLI into a place where it is easily accessible from Node.js. It also involves multiple Xcode builds, and it's easy to forget a step. Ultimately, we want the Xcode development process to "just work" when we build the MyProjectCK app or the MyProjectCKLib library. Fortunately, everything can happen automatically in Xcode using a combination of Run Script build steps and post-build actions in the Xcode schemes.
+
+We want to invoke the CLI from Node.js, so we need to make it more easily available to Node.js, just like the NodeSwift makes `Module.node` easily accessible from `index.js` by placing a symlink in the `.build` directory. In this example, we want *both* the `Module.node` and the CLI available. We already have automation set up to build `Module.node` using a Run Script build step on MyProductCKLib. We need something similar for the CLI. Unfortunately, there are two complications:
+
+1. We can't add another Run Script build step to MyProductCKLib or extend the existing one, because we need to build another Xcode scheme, and because the Run Script is part of a build that is not complete, Xcode objects to two builds going on at the same time.
+
+2. We need the CLI that we make available to Node.js to be fully built *and signed*. We can't add a Run Script to the MyProductCLI target, because Run Scripts execute before signing.
+
+The solution here is to add a "post-build action" to the MyProductCKLib build. We do that using the Scheme editor: Edit Scheme... -> Expand the "Build" item on the left -> "Post-actions" -> "+" button. We use the build settings from `MyProductCKLib` and execute a script to build `MyProductCLI`:
+
+```
+sh $PROJECT_DIR/MyProductCKNS/build-cli.sh
+```
+
+When the `MyProductCLI` build is done, we use the `post-build-cli.sh` script to copy the resulting `MyProductCLI.app` into the same `.build` directory that `Module.node` is in, and we create a symlink to the executable `MyProductCLI` inside of the app. This makes both `Module.node` and `MyProductCLI` easily accessible from `index.js` by requiring them from the `.build` directory. We re-use the same `post-build-cli.sh` script as a post-build action on the MyProductCLI target so that it executes when `MyProductCLI` is built directly from the Xcode target.
+
+### Testing The Node Module and CLI
+
+Compared to `index.js` in `MyProductNS` (i.e., the directory used for the NodeSwift build without restricted entitlements issues), the `index.js` in `MyProductCKNS` shows how to use the CLI from Node.js using Node's child\_process.
+
+```
+// Needed to access MyProductCLI for entry points needing restricted entitlements
+const child_process = require('child_process');
+const fs = require('node:fs');
+const path = require('path');
+
+// Invoke the CLI command to access iCloud. The CLI executable has to reside within
+// an app that has the proper entitlements.
+try {
+    // The post-build-cli script executed after MyProductCLI builds places a symbolic
+    // link in the .build/MyProductCKNS directory which links to the executable
+    // inside MyProductCLI.app. However, the link is relative to where it resides,
+    // so we have to join it with the .build directory to spawn it.
+    const cli = path.join(".build", fs.readlinkSync('./.build/MyProductCLI'));
+    const child = child_process.spawnSync(cli, ['-i', 'iCloud.com.stevengharris.MyProductCK']);
+    
+    // Note the contents of stdout is from print(MyModel.helloCloudKit(iCloudContainer)) inside
+    // of MyProjectTool.run(). The async command being run doesn't return a result.
+    console.log(child.stdout.toString().trim()); // Hello, iCloud! coming from MyModel
+} catch (err) {
+    console.log('Error. Build MyProductCLI before running "node index.js"... ' + err);
+}
+
+```
+
+From within the `MyProductCKNS` directory, invoke Node.js on `index.js`:
+
+```
+node index.js
+```
+
+You will see the `Model.helloWorld()` entry point that is exposed in `MyModelExports` along with the original Swift code execution from the node-swift example:
+
+```
+Hello, world!
+Hello, CloudKit!
+[ 3, 4 ]
+NodeSwift! NodeSwift! NodeSwift! 
+calculating...
+5.0 + 10.0 = 15.0
+```
+
+### Xcode Development Process With NodeSwift and CLI
+
+Like the case without restricted entitlement complications, the Run Script for MyProductCKLib ensures that the Node module is built whenever you update and rebuild MyProductCK or MyProductCKLib. The addition of post-build actions to build and copy/symlink the CLI ensures that the CLI is also updated as you do Xcode development on the app or library.
+
+If you want to add new functionality to the CLI because you need to exercise Swift entry points that require restricted entitlements, then you would do so in `MyProductTool.swift` within the example project, and then make corresponding changes/additions to `index.js` to test them.

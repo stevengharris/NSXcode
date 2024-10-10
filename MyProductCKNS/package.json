@@ -1,7 +1,7 @@
 {
-  "name": "node-swift-xcode-cklib",
+  "name": "node-swift-xcode-lib",
   "version": "1.0.0",
-  "description": "Create CK-entitled node-swift modules from Xcode",
+  "description": "Create node-swift modules from Xcode",
   "main": "index.js",
   "scripts": {
     "install": "node-swift rebuild",

@@ -493,7 +493,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Build the Node module for MyProductLib\ncd $PROJECT_DIR/MyProductNS\nsh ./post-build-lib.sh\n";
+			shellScript = "# Build the Node module for MyProductLib\ncd $PROJECT_DIR/MyProductNS\nsh ./build-ns.sh\n";
 		};
 		AA516AC42CB5C7DD004D0AE6 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -511,7 +511,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Build the Node module for MyProductCKLib\ncd $PROJECT_DIR/MyProductCKNS\nsh ./post-build-lib.sh\n";
+			shellScript = "# Build the Node module for MyProductCKLib\ncd $PROJECT_DIR/MyProductCKNS\nsh ./build-ns.sh\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

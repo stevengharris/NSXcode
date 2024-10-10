@@ -25,6 +25,9 @@ try {
     // so we have to join it with the .build directory to spawn it.
     const cli = path.join(".build", fs.readlinkSync('./.build/MyProductCLI'));
     const child = child_process.spawnSync(cli, ['-i', 'iCloud.com.stevengharris.MyProductCK']);
+    
+    // Note the contents of stdout is from print(MyModel.helloCloudKit(iCloudContainer)) inside
+    // of MyProjectTool.run(). The async command being run doesn't return a result.
     console.log(child.stdout.toString().trim()); // Hello, iCloud! coming from MyModel
 } catch (err) {
     console.log('Error. Build MyProductCLI before running "node index.js"... ' + err);
