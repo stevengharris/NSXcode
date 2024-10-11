@@ -1,8 +1,9 @@
 {
-  "name": "node-swift-xcode-lib",
+  "name": "nsxcode",
   "version": "1.0.0",
   "description": "Create node-swift modules from Xcode",
   "main": "index.js",
+  "exports": "./.build/Module.node",
   "scripts": {
     "install": "node-swift rebuild",
     "build": "node-swift build",

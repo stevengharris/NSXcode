@@ -80,6 +80,7 @@
 		AA3A13572CAC5A0100CF2744 /* MyProduct.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyProduct.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA3A13792CAC5E6800CF2744 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		AA516AE42CB71CFE004D0AE6 /* MyProductCLI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyProductCLI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA516AFE2CB9D138004D0AE6 /* HelloFromSwiftWorld.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = HelloFromSwiftWorld.jpg; sourceTree = "<group>"; };
 		AADAF4A12CAC9DF8009B6744 /* MyProductLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MyProductLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AAEB56D32CADF95F0095E5FA /* MyProductCK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyProductCK.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AAEB56E72CADF9880095E5FA /* MyProductCKLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MyProductCKLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -220,6 +221,7 @@
 				AA516AE52CB71CFE004D0AE6 /* MyProductCLI */,
 				AADAF4832CAC9C29009B6744 /* Frameworks */,
 				AA3A13582CAC5A0100CF2744 /* Products */,
+				AA516AFE2CB9D138004D0AE6 /* HelloFromSwiftWorld.jpg */,
 			);
 			sourceTree = "<group>";
 		};

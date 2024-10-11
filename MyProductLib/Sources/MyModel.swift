@@ -9,7 +9,7 @@
 public struct MyModel {
     
     public static func helloWorld() -> String {
-        "Hello, world!"
+        "Hello, from Swift world!"
     }
     
     // For consistency with the existing node-swift example...

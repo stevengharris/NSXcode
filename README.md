@@ -6,12 +6,13 @@ Using NodeSwift with an existing Xcode project
 
 ## Background
 
-NSXcode contains an example Xcode project that makes some of its Swift functionality callable from Node.js using the [NodeSwift](https://github.com/kabiroberai/node-swift) project. The NodeSwift project contains an example within it, but like me, many users will come at it with existing Xcode projects in-place. Building on the [NodeSwift example](https://github.com/kabiroberai/node-swift/tree/main/example), this repository and README provide documentation about how to take an existing Xcode project and make some of its functionality available to Node.js, including:
+[NodeSwift](https://github.com/kabiroberai/node-swift) is a project that bridges Node.js and Swift code. The NodeSwift project contains an example within it, but many users will come at it with existing Xcode projects in-place. Building on the [NodeSwift example](https://github.com/kabiroberai/node-swift/tree/main/example), this repository and README provide documentation about how to take an existing Xcode project and make some of its functionality available to Node.js, including:
 
-* Setting up the node-swift build directory for your Xcode project
+* Setting up the NodeSwift build directory for your Xcode project
 * Using an Xcode Run Script to build the Node module for your Xcode project
 * Dealing with Swift code that requires restricted entitlements (e.g., iCloud)
 * Making creation of the Node module a transparent part of your Xcode project build process
+* Using Swift from a VSCode extension (whose host process runs Node.js)
 
 As stated in the [NodeSwift README](https://github.com/kabiroberai/node-swift):
 
@@ -29,22 +30,21 @@ You should have [Node.js](https://nodejs.org/en) and npm installed. The project 
 
 Clone the [node-swift](https://github.com/kabiroberai/node-swift) repo locally. You should use a local copy because at this time, node-swift from npm is out of date, per [this issue](https://github.com/kabiroberai/node-swift/issues/13).
 
-The Swift entry points you expose to Node.js *cannot* reside in source files that import or depend on UI modules - SwiftUI, UIKit, or AppKit. If you want to expose entry points in an existing project that includes UI, you should start by factoring-out a separate library without UI dependencies which you can then have your existing project depend on and import. In the SwiftUI example here, `MyProduct`, the `ContentView` displays "Hello, world!" using a `MyModel` struct that is built in the `MyProductLib` framework that `MyProduct` depends on.
+The Swift entry points you expose to Node.js *cannot* reside in source files that import or depend on UI modules - SwiftUI, UIKit, or AppKit. If you want to expose entry points in an existing project that includes UI, you should start by factoring-out a separate library without UI dependencies which you can then have your existing project depend on and import. In the SwiftUI example here, `MyProduct`, the `ContentView` displays "Hello, from Swift world!" using a `MyModel` struct that is built in the `MyProductLib` framework that `MyProduct` depends on.
 
 ## Do You Need Restricted Entitlements?
 
-Your project may require capabilities/entitlements that are only available with a provisioning profile. For example, iCloud access is only available with entitlements that are in turn tied to your provisioning profile. The entire concept of restricted entitlements applies to an app bundle, but here we are building a Node module. *You won't be able to execute Swift code that requires entitlements using NodeSwift*. To work around this limitation, you can access these kinds of functions from a CLI that you embed in an app bundle. We will discuss how to do that in a [separate section](#accessing-swift-code-requiring-restricted-entitlements) below.
+Your project may require capabilities/entitlements that are only available with a provisioning profile. For example, iCloud access is only available with entitlements that are in turn tied to your provisioning profile. The entire concept of restricted entitlements applies to an app bundle, but here we are building a Node module. *You won't be able to execute Swift code that requires entitlements using NodeSwift*. To work around this limitation, you can access these kinds of functions from a CLI that you embed in an app bundle. We will discuss how to do that in a [separate section](#builds-with-restricted-entitlements) below.
 
 ## Builds Without Restricted Entitlements
 
 `MyProject` contains two build targets that are free of the complications of restricted entitlements:
 
-1. `MyProduct`: This target is used as the simplest baseline, an example of an existing Xcode project. It is the equivalent of the standard Xcode-produced target for a SwiftUI app (although everything here applies to any UI-dependent app). The target was modified to remove the App Sandbox capability. Note the Hardened Runtime capability default was left in place. The "Hello, world!" string is returned from `MyModel` which is built as part of `MyProductLib` target.
+1. `MyProduct`: This target is used as the simplest baseline, an example of an existing Xcode project. It is the equivalent of the standard Xcode-produced target for a SwiftUI app (although everything here applies to any UI-dependent app). The target was modified to remove the App Sandbox capability. Note the Hardened Runtime capability default was left in place. The "Hello, from Swift world!" string is returned from `MyModel` which is built as part of `MyProductLib` target.
 
 2. `MyProductLib`: This builds the framework that both `MyProduct` and the Node module depend on. Note that `MyProductLib` has no dependency on NodeSwift. It is just a way to:
-
-        * Factor-out non-UI code containing functions/methods we want to expose to Node.js.
-        * Define a `Package.swift` that can be identified as a package dependency when we build the Node module separately.
+    * Factor-out non-UI code containing functions/methods we want to expose to Node.js.
+    * Define a `Package.swift` that can be identified as a package dependency when we build the Node module separately.
         
 In addition to these two normal Xcode build targets, we use a `MyProductNS` directory to build the Node module. This is the equivalent of the [example](https://github.com/kabiroberai/node-swift/tree/main/example) in the node-swift repository, but it exposes an entry point in MyProductLib to Node.js. (Note also that MyProductLib Build Phases include a [Run Script to automate](#automating-node-module-builds) the Node module build process.)
 
@@ -52,7 +52,7 @@ In addition to these two normal Xcode build targets, we use a `MyProductNS` dire
 
 The NodeSwift build process and the definition of the entry points that are exposed to Node.js are defined in the `MyProductNS` directory. The following steps were required to set up the `MyProductNS` directory in a way that can build the Node module and make it easy to iterate with changes in the Xcode project.
 
-1. Add a `package.json` modeled on the one in the NodeSwift  [example](https://github.com/kabiroberai/node-swift/tree/main/example). You can leave the dependencies section empty initially.
+1. Add a `package.json` modeled on the one in the NodeSwift  [example](https://github.com/kabiroberai/node-swift/tree/main/example). You can leave the dependencies section empty initially. Note: If you want to access the exported entry points from JavaScript (perhaps via TypeScript) code, you need to include an `"exports": "./.build/Module.node"` section in `package.json. This is not included in the NodeSwift example.
 
 2. Install `node-swift` as a dependency using `npm install <relative path to the node-swift repo you cloned>`. This creates a symlink in your `node_modules` directory and updates the dependencies section of `package.json`.
 
@@ -105,7 +105,7 @@ node index.js
 You will see the `Model.helloWorld()` entry point that is exposed in `MyModelExports` along with the original Swift code execution from the node-swift example:
 
 ```
-Hello, world!
+Hello, from Swift world!
 [ 3, 4 ]
 NodeSwift! NodeSwift! NodeSwift! 
 calculating...
@@ -236,7 +236,7 @@ When the `MyProductCLI` build is done, we use the `post-build-cli.sh` script to 
 
 ### Testing The Node Module and CLI
 
-Compared to `index.js` in `MyProductNS` (i.e., the directory used for the NodeSwift build without restricted entitlements issues), the `index.js` in `MyProductCKNS` shows how to use the CLI from Node.js using Node's child\_process.
+Compared to `index.js` in `MyProductNS` (i.e., the directory used for the NodeSwift build without restricted entitlements issues), the `index.js` in `MyProductCKNS` adds additional code to invoke the CLI from Node.js using Node's child\_process.
 
 ```
 // Needed to access MyProductCLI for entry points needing restricted entitlements
@@ -269,10 +269,10 @@ From within the `MyProductCKNS` directory, invoke Node.js on `index.js`:
 node index.js
 ```
 
-You will see the `Model.helloWorld()` entry point that is exposed in `MyModelExports` along with the original Swift code execution from the node-swift example:
+In addition to the `Model.helloWorld()` entry point that is exposed in `MyModelExports` and the original code from the NodeSwift example, you will see the "Hello, CloudKit" print show up that executes after instantiating a CKContainer (something that requires the entitlements):
 
 ```
-Hello, world!
+Hello, from Swift world!
 Hello, CloudKit!
 [ 3, 4 ]
 NodeSwift! NodeSwift! NodeSwift! 
@@ -285,3 +285,102 @@ calculating...
 Like the case without restricted entitlement complications, the Run Script for MyProductCKLib ensures that the Node module is built whenever you update and rebuild MyProductCK or MyProductCKLib. The addition of post-build actions to build and copy/symlink the CLI ensures that the CLI is also updated as you do Xcode development on the app or library.
 
 If you want to add new functionality to the CLI because you need to exercise Swift entry points that require restricted entitlements, then you would do so in `MyProductTool.swift` within the example project, and then make corresponding changes/additions to `index.js` to test them.
+
+## Using Swift from a VSCode Extension
+
+It's been a long journey to automate the use of NodeSwift and a wrapped CLI within Xcode. But, the automation investment also means that we can develop in Xcode and immediately use our Swift investment from within a [VSCode extension](https://code.visualstudio.com/api/get-started/your-first-extension). Let's use the [helloworld-sample](https://github.com/microsoft/vscode-extension-samples/tree/main/helloworld-sample) found within the Microsoft's [VSCode extension samples](https://github.com/microsoft/vscode-extension-samples). 
+
+From within the `helloworld-sample` directory, install the NodeSwift build directory for your project. Using the example with both NodeSwift entry points and the wrapped CLI to get access to restricted entitlements here:
+
+```
+npm install <relative path to MyProductCKNS>
+```
+
+This adds a dependency on `nsxcode` into the `helloworld-sample` `package.json` and adds a symlink to the relative path you identified in `node_modules`. It kicks off a build that takes a long time because of the dependency on Swift Syntax. Now as you update your Swift code from Xcode and build `MyProductCK` (or separately `MyProductCKLib` or `MyProductCLI`), your changes (via the links to `Module.node` and `MyProductCLI` in `MyProductCKNS/.build`) are available immediately to the `helloworld-sample` VSCode plugin.
+
+Microsoft prefers TypeScript to JavaScript for VSCode plugins, so the code in the `helloworld-sample` resides in `src/extension.ts`, and we need to use `import` rather than `requires` like we were using in `index.js`. We also need to create `src/nsxcode.d.ts` file that declares the nsxcode module:
+
+```
+declare module "nsxcode"
+```
+
+Once that setup is complete, we can import the NodeSwift entry points:
+
+```
+import { hello, nums, str, add } from 'nsxcode';
+```
+
+We can invoke the CLI to gain access to iCloud the same way we did in `index.js`. Reaching `MyProductCLI` is a bit more convoluted, since it is being invoked from a VSCode extension. The modified `extension.ts` looks like this:
+
+```
+import * as vscode from 'vscode';
+
+import { hello, nums, str, add } from 'nsxcode';
+
+// Needed to access MyProductCLI for entry points needing restricted entitlements
+import * as child_process from 'child_process';
+import { readlinkSync } from 'node:fs';
+import * as path from 'path';
+
+// this method is called when your extension is activated
+// your extension is activated the very first time the command is executed
+export function activate(context: vscode.ExtensionContext) {
+    // Use the console to output diagnostic information (console.log) and errors (console.error)
+    // This line of code will only be executed once when your extension is activated
+    console.log('Congratulations, your extension "helloworld-sample" is now active!');
+    
+    // Invoke the node-swift-exposed entry point
+    console.log(hello()); // Hello, from Swift world! coming from MyModel
+
+    // Invoke the CLI command to access iCloud. The CLI executable has to reside within
+    // an app that has the proper entitlements.
+    try {
+        // The post-build-cli script executed after MyProductCLI builds places a symbolic
+        // link in the .build/MyProductCKNS directory which links to the executable
+        // inside MyProductCLI.app. However, the link is relative to where it resides,
+        // so we have to join it with the .build directory to spawn it.
+        const pathToCLILink = path.join(context.extensionPath, 'node_modules', 'nsxcode/.build');
+        const cliLink = path.join(pathToCLILink, 'MyProductCLI');
+        const cli = path.join(pathToCLILink, readlinkSync(cliLink));
+        const child = child_process.spawnSync(cli, ['-i', 'iCloud.com.stevengharris.MyProductCK']);
+    
+        // Note the contents of stdout is from print(MyModel.helloCloudKit(iCloudContainer)) inside
+        // of MyProjectTool.run(). The async command being run doesn't return a result.
+        console.log(child.stdout.toString().trim()); // Hello, iCloud! coming from MyModel
+    } catch (err) {
+        console.log('Error. Build MyProductCLI before running "node index.js"... ' + err);
+    }
+
+    // Original node-swift example
+    console.log(nums); // [ 3, 4 ]
+    console.log(str); // NodeSwift! NodeSwift! NodeSwift!
+    add(5, 10).then(console.log); // 5.0 + 10.0 = 15.0
+
+    // The command has been defined in the package.json file
+    // Now provide the implementation of the command with registerCommand
+    // The commandId parameter must match the command field in package.json
+    const disposable = vscode.commands.registerCommand('extension.helloWorld', () => {
+        // The code you place here will be executed every time your command is executed
+
+        // Display a message box to the user
+        vscode.window.showInformationMessage(hello());
+    });
+
+    context.subscriptions.push(disposable);
+}
+```
+
+When you run the extension, the `console.log` statements show up in the VSCode console:
+
+```
+Congratulations, your extension "helloworld-sample" is now active!
+Hello, from Swift world!
+Hello, CloudKit!
+(2) [3, 4]
+NodeSwift! NodeSwift! NodeSwift!
+5.0 + 10.0 = 15.0
+```
+
+and you will see an information box displaying the result from executing the Swift code in `MyModel.helloWorld()`.
+
+![Hello, from Swift world!](HelloFromSwiftWorld.jpg)

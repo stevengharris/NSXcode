@@ -15,6 +15,6 @@ import MyProductCKLib
     // For consistency with the existing node-swift example...
     "nums": Array<NodeValueConvertible>(MyModel.nums),
     "str": MyModel.str,
-    "add": try NodeFunction { await MyModel.add(a: 2, b: 2) }
+    "add": try NodeFunction { a, b in await MyModel.add(a: a, b: b) }
     
 ])

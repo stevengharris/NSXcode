@@ -9,7 +9,7 @@
 const { hello, nums, str, add } = require('./.build/Module.node');
 
 // Invoke the node-swift-exposed entry point
-console.log(hello()); // Hello, world! coming from MyModel
+console.log(hello()); // Hello, from Swift world! coming from MyModel
 
 // Original node-swift example
 console.log(nums); // [ 3, 4 ]

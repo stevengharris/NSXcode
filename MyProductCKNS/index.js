@@ -14,7 +14,7 @@ const fs = require('node:fs');
 const path = require('path');
 
 // Invoke the node-swift-exposed entry point
-console.log(hello()); // Hello, world! coming from MyModel
+console.log(hello()); // Hello, from Swift world! coming from MyModel
 
 // Invoke the CLI command to access iCloud. The CLI executable has to reside within
 // an app that has the proper entitlements.

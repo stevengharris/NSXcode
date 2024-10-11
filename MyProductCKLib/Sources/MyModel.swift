@@ -11,7 +11,7 @@ import CloudKit
 public struct MyModel {
     
     public static func helloWorld() -> String {
-        "Hello, world!"
+        "Hello, from Swift world!"
     }
     
     // A method that will crash if CloudKit entitlements are not properly enabled
